@@ -1,12 +1,11 @@
-import React from 'react'
-import {Modal,Button} from 'react-bootstrap';
+import {React,useContext} from 'react'
+import {Modal,Row} from 'react-bootstrap';
 import ShoppingCartMedia from '../ShoppingCartMedia/ShoppingCartMedia';
+import UserContext from '../Context/Context';
+
 
 function ShoppingCart(props) {
-   
-    
-    
-
+  const [cart_val,setCartVal] = useContext(UserContext);
 
     return (
       <Modal
@@ -22,9 +21,25 @@ function ShoppingCart(props) {
         </Modal.Header>
         <Modal.Body>
           <h4></h4>
-          < ShoppingCartMedia />
+          {cart_val>0 ? 
+         
+         /* <ShoppingCartMedia   />*/ 
+         <Row>
+         <h3 style={{ "text-align" :"center"}}>shopping cart under construction </h3>
+         </Row>
+          :
+          <Row>
+          <h3 style={{ "text-align" :"center"}}>Cart is empty </h3>
+          <img
+          alt=""
+          src="/empty-cart.svg"
+          width="200"
+          height="200"
+          className="d-inline-block align-top"
+          />
+          </Row>
+          }
         </Modal.Body>
-       
       </Modal>
     );
   }

@@ -1,67 +1,70 @@
-import React,{useState,useContext} from 'react';
+import React,{useState,useContext,useEffect} from 'react';
 import axios from "axios"
 import { Container, Row, Col, Button,Dropdown} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import UserContext from '../Context/Context';
-
+import ImageCarousel from '../ImageCarousel/ImageCarousel';
 
 const ProductView = () => {
- 
+  const { productId }  = useParams();
   const [cart_val,setCartVal] = useContext(UserContext);
   const [product,setProduct] = useState([])
   const [quantity,setQuantity] = useState([])
-  const { productId }  = useParams();
+  useEffect(() => {
+    axios
+    .get('https://zooplusecomm.herokuapp.com/api/products/search/'+ productId)
+    .then(
+      response => {
+        setProduct(response.data)
+      })
+      .catch(err => {
+        console.error(err)
+    });
   
+  }, []);
+  
+    function generateUserId() {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength =  8;
+    for ( var i = 0; i < charactersLength; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+    charactersLength));
+   }
+   return result;
+   
+}
+
   function addToCart()
   {
+  setCartVal(cart_val+1)   //updating the userContext value
+  console.log("cart value"+cart_val)
+  const userId= "sharmila"
 
-    setCartVal(cart_val+1)
-  axios
-  .post('https://zooplusecomm.herokuapp.com/api/cart/', {
-    "userId": "vishuu",
-    "products":
-     {
-       "productId": productId,
-       "quantity": "1"
-     }
-    
-  })
-  .then(
-    response => {
-      console.log(response.status)
+    axios
+    .put('https://zooplusecomm.herokuapp.com/api/cart/sharmila', {
+      "userId": userId, 
+      "products":
+       {
+         "productId": product.productId,
+         "productImage" : product.imageUrl,
+         "productPrice" : product.price,
+         "productTitle" : product.title,
+         "quantity": 1,
+       }
     })
-    .catch(err => {
-      console.error(err)
-  });
-    console.log("added to cart")
-  }
-  function removeFromCart()
-  {
-    if(cart_val < 0 || cart_val==0){
-      setCartVal(0)
+    .then(
+      response => {
+        console.log(response.status)
+      })
+      .catch(err => {
+        console.error(err)
+    });
+      console.log("updated the cart")
     }
-    else{
-      setCartVal(cart_val-1)
-    }
-    
-   console.log("added to cart")
-    
-  }
-  
 
- 
-  axios
-  .get('https://zooplusecomm.herokuapp.com/api/products/search/'+ productId)
-  .then(
-    response => {
-      setProduct(response.data)
-    })
-    .catch(err => {
-      console.error(err)
-  });
 
     return (
-
         <Container>
         <Row>
         <Col className="m-6">
@@ -87,14 +90,18 @@ const ProductView = () => {
             <Dropdown.Item href="">3</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
-        
         <Col>
         <Button onClick={addToCart}>Add to Cart </Button>
+        
         </Col>
         </Col>
         </Row>
+        <Row>
+        <h3 style={{ "text-align": "center" }}>Currently on Sale</h3>
+        <ImageCarousel/>
+        </Row>
         </Container>
-        
+      
     
     );
   

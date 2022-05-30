@@ -27,15 +27,7 @@ function Topbar() {
         style={{ maxHeight: '300px' }}
         navbarScroll
       >
-        <Form className="d-flex">
-        <FormControl
-          type="search"
-          placeholder="Search"
-          className="me-2"
-          aria-label="Search"
-        />
-        <Button variant="outline-success">Search</Button>
-      </Form>
+        
       </Nav>
       <Button onClick={() => setModalShow(true)} variant="success">
   Shopping Cart <Badge bg="secondary"> {cart_val}</Badge>
